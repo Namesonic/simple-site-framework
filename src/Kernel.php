@@ -13,6 +13,9 @@ class Kernel {
     // must end with a letter or number
     const REGEX_ALLOWED_URL_FORMAT = '!^[a-z][a-z0-9]+$!';
 
+    // This is the default controller that is loaded if no page is specified
+    const DEFAULT_CONTROLLER_NAME = "index";
+
     public function __construct($namespace)
     {
         !$namespace && die('Id like to know your namespace please');
@@ -27,7 +30,7 @@ class Kernel {
         if (isset($_REQUEST['p'])) {
             $page = rtrim($_REQUEST['p'], '/\\');
         } else {
-            $page = 'home';
+            $page = self::DEFAULT_CONTROLLER_NAME;
         }
 
         // Build the controller path

@@ -18,7 +18,12 @@ class Template {
      */
     public function render($templateName = self::DEFAULT_TEMPLATE): array|string|null
     {
+        // Determine the template
+        if ($this->view->getTemplate()) {
+            $templateName = $this->view->getTemplate();
+        }
         $filename = '../resources/layouts/' . $templateName . '.php';
+
         // Get current layout
         if (file_exists($filename)) {
             $output = file_get_contents($filename);

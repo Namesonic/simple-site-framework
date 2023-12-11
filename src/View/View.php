@@ -6,9 +6,10 @@ class View {
     private string $page = '';
     private string $body = '';
     private string $title = '';
+    private string $template = '';
     private array $params = [];
 
-    public function __construct($page, array $vars = []) {
+    public function __construct($page = '', array $vars = []) {
         $this->page = $page;
         $this->params = $vars;
     }
@@ -35,11 +36,26 @@ class View {
         return $this;
     }
 
+    public function getTemplate(): string
+    {
+        return $this->template;
+    }
+
+    public function setTemplate($template): static
+    {
+        $this->template = $template;
+        return $this;
+    }
+
     /**
      * @throws \Exception
      */
     public function load(): void
     {
+        if (!$this->page) {
+            return;
+        }
+
         $filename = '../resources/views/' . $this->page . '.php';
         if (file_exists($filename)) {
             if (!$this->body = file_get_contents($filename)) {
