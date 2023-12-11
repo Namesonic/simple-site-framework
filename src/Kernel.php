@@ -8,6 +8,11 @@ class Kernel {
 
     private string $namespace;
 
+    // Allow sub folders and letters and numbers only in a url path
+    // must start with a letter
+    // must end with a letter or number
+    const REGEX_ALLOWED_URL_FORMAT = '!^[a-z][a-z0-9]+$!';
+
     public function __construct($namespace)
     {
         !$namespace && die('Id like to know your namespace please');
@@ -20,39 +25,46 @@ class Kernel {
     {
         // Load the current page/controller
         if (isset($_REQUEST['p'])) {
-            $page = $_REQUEST['p'];
+            $page = rtrim($_REQUEST['p'], '/\\');
         } else {
             $page = 'home';
         }
 
-        if (preg_match('/^\w+$/', $page)) {
-            $controllerName = $this->namespace . '\\Controllers\\' . ucfirst($page) . "Controller";
-
-            // Look for matching class?
-            if (class_exists("$controllerName")) {
-                $pageController = new $controllerName;
-
-                // Run the controller handle method
-                /** @var View $view */
-                $view = $pageController->handle();
-
-                // Load the prepared view / replace params
-                $view->load();
-                $view->replaceParams();
-
-                // Create a template with the prepared view
-                $template = new Template($view);
-
-                // Output the template
-                echo $template->render();
+        // Build the controller path
+        $controllerName = $this->namespace . '\\Controllers';
+        foreach(explode('\\', $page) as $piece) {
+            // Check the URL path piece meets our allowed formats (a-z0-9...)
+            if (preg_match(self::REGEX_ALLOWED_URL_FORMAT, $piece)) {
+                $controllerName .= "\\" . ucfirst($piece);
             } else {
-                header("HTTP/1.0 404 Not Found");
-                print file_get_contents('../resources/errordocs/404.php');
-                // print "Requested page not found (Missing Controller $controllerName)";
+                header("HTTP/1.0 400 Bad Request");
+                print file_get_contents('../resources/errordocs/400.php');
+                exit;
             }
+        }
+        $controllerName .= "Controller";
+
+        // Look for matching class?
+        if (class_exists("$controllerName")) {
+            $pageController = new $controllerName;
+
+            // Run the controller handle method
+            /** @var View $view */
+            $view = $pageController->handle();
+
+            // Load the prepared view / replace params
+            $view->load();
+            $view->replaceParams();
+
+            // Create a template with the prepared view
+            $template = new Template($view);
+
+            // Output the template
+            echo $template->render();
         } else {
-            header("HTTP/1.0 400 Bad Request");
-            print file_get_contents('../resources/errordocs/400.php');
+            header("HTTP/1.0 404 Not Found");
+            print file_get_contents('../resources/errordocs/404.php');
+            // print "Requested page not found (Missing Controller $controllerName)";
         }
     }
 }
