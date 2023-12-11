@@ -3,7 +3,7 @@
 namespace SimpleSite\Http\Exceptions;
 
 class Handler {
-    public function handle(\Exception $e): void
+    public function handle(\Throwable $e): void
     {
         print "<b>Uncaught Exception</b> > " . $e->getMessage() . "<br>";
         print "<blockquote>";
