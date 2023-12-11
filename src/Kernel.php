@@ -11,7 +11,7 @@ class Kernel {
     // Allow sub folders and letters and numbers only in a url path
     // must start with a letter
     // must end with a letter or number
-    const REGEX_ALLOWED_URL_FORMAT = '!^[a-z][a-z0-9\-]+[a-z0-9]$!';
+    const REGEX_ALLOWED_URL_FORMAT = '!^[a-z][a-z0-9/\-]+[a-z0-9]$!';
 
     // This is the default controller that is loaded if no page is specified
     const DEFAULT_CONTROLLER_NAME = "index";
@@ -39,6 +39,9 @@ class Kernel {
             // Check the URL path piece meets our allowed formats (a-z0-9...)
             if (preg_match(self::REGEX_ALLOWED_URL_FORMAT, $piece)) {
                 $controllerName .= "\\";
+
+                // Replace forward slashes with backslash
+                $piece = str_replace('/', '\\', $piece);
 
                 // Check for hyphen syntax
                 foreach(explode('-', $piece) as $word) {
