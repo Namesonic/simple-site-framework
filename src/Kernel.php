@@ -11,7 +11,7 @@ class Kernel {
     // Allow sub folders and letters and numbers only in a url path
     // must start with a letter
     // must end with a letter or number
-    const REGEX_ALLOWED_URL_FORMAT = '!^[a-z][a-z0-9]+$!';
+    const REGEX_ALLOWED_URL_FORMAT = '!^[a-z][a-z0-9\-]+[a-z0-9]$!';
 
     // This is the default controller that is loaded if no page is specified
     const DEFAULT_CONTROLLER_NAME = "index";
@@ -38,7 +38,12 @@ class Kernel {
         foreach(explode('\\', $page) as $piece) {
             // Check the URL path piece meets our allowed formats (a-z0-9...)
             if (preg_match(self::REGEX_ALLOWED_URL_FORMAT, $piece)) {
-                $controllerName .= "\\" . ucfirst($piece);
+                $controllerName .= "\\";
+
+                // Check for hyphen syntax
+                foreach(explode('-', $piece) as $word) {
+                    $controllerName .= ucfirst($word);
+                }
             } else {
                 header("HTTP/1.0 400 Bad Request");
                 print file_get_contents('../resources/errordocs/400.php');
