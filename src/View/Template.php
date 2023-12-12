@@ -32,7 +32,7 @@ class Template {
         }
 
         // Place page into template body
-        $output = preg_replace("/\{\{ body }}/", $this->view->getBody(), $output);
+        $output = preg_replace("/\{\{ body }}/", str_replace('$', '\\$', $this->view->getBody()), $output);
 
         // Replace additional variables
         return preg_replace("/\{\{ title }}/", $this->view->getTitle(), $output);

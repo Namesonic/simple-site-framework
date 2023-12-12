@@ -79,7 +79,6 @@ class View {
             throw new \Exception('Missing requested view template file: ' . $filename);
         }
 
-        $this->replaceParams();
     }
 
     public function replaceParams(): void
