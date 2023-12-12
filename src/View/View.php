@@ -6,8 +6,9 @@ class View {
     private string $page = '';
     private string $body = '';
     private string $title = '';
-    private string $template = '';
+    private string $layout = '';
     private array $params = [];
+    private array $paramsLayout = [];
     private bool $addSuffix = false;
 
     public function __construct($page = '', array $vars = []) {
@@ -42,6 +43,18 @@ class View {
         return $this->params;
     }
 
+    public function setParamsLayout($param): static
+    {
+        $this->paramsLayout = $param;
+
+        return $this;
+    }
+
+    public function getParamsLayout(): array
+    {
+        return $this->paramsLayout;
+    }
+
     public function setTitle($title, $addSuffix = false): static
     {
         $this->title = $title;
@@ -50,14 +63,14 @@ class View {
         return $this;
     }
 
-    public function getTemplate(): string
+    public function getLayout(): string
     {
-        return $this->template;
+        return $this->layout;
     }
 
-    public function setTemplate($template): static
+    public function setLayout($layout): static
     {
-        $this->template = $template;
+        $this->layout = $layout;
         return $this;
     }
 
