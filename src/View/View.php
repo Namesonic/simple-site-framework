@@ -8,6 +8,7 @@ class View {
     private string $title = '';
     private string $template = '';
     private array $params = [];
+    private bool $addSuffix = false;
 
     public function __construct($page = '', array $vars = []) {
         $this->page = $page;
@@ -21,7 +22,19 @@ class View {
 
     public function getTitle(): string
     {
-        return $this->title;
+        $title = $this->title;
+
+        if ($this->addSuffix) {
+            if ($title) {
+                $title .= " - " . config('SITE_NAME');
+            }
+        }
+
+        if (!$title) {
+            $title = config('SITE_NAME') . " - " . config('SITE_DESCRIPTION');
+        }
+
+        return $title;
     }
 
     public function getParams(): array
@@ -32,6 +45,7 @@ class View {
     public function setTitle($title, $addSuffix = false): static
     {
         $this->title = $title;
+        $this->addSuffix = $addSuffix;
 
         return $this;
     }

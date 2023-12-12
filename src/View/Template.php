@@ -35,6 +35,6 @@ class Template {
         $output = preg_replace("/\{\{ body }}/", $this->view->getBody(), $output);
 
         // Replace additional variables
-        return preg_replace("/\{\{ title }}/", $this->view->getTitle() ?: 'No Title', $output);
+        return preg_replace("/\{\{ title }}/", $this->view->getTitle(), $output);
     }
 }
